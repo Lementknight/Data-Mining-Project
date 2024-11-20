@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 from dotenv import load_dotenv
 import os
+import sys
 from datetime import datetime
 
 # Load environment variables from the .env file
@@ -35,6 +36,8 @@ def create_session():
         exit(1)
 
 
+
+# Figure Out
 def search_posts(query, access_token, limit=25, sort="latest"):
     """
     Search for posts using the BlueSky API.
@@ -54,6 +57,7 @@ def search_posts(query, access_token, limit=25, sort="latest"):
 
     try:
         response = requests.get(url, headers=headers, params=params)
+        print(response)
         response.raise_for_status()
         return response.json().get("posts", [])
     except requests.exceptions.RequestException as e:
@@ -62,7 +66,7 @@ def search_posts(query, access_token, limit=25, sort="latest"):
         return []
 
 
-def extract_post_data(posts, start_date, end_date):
+def extract_post_data(posts, start_date=None, end_date=None):
     """
     Extract relevant data from posts and filter by date range.
 
@@ -72,27 +76,36 @@ def extract_post_data(posts, start_date, end_date):
     :return: List of dictionaries containing post data.
     """
     extracted_data = []
-    start_date = datetime.strptime(start_date, "%Y-%m-%d")
-    end_date = datetime.strptime(end_date, "%Y-%m-%d")
+    # if start_date and end_date:
+    #     start_date = datetime.strptime(start_date, "%Y-%m-%d")
+    #     end_date = datetime.strptime(end_date, "%Y-%m-%d")
 
     for post in posts:
         try:
             post_content = post["record"].get("text", "")  # Extract the text content
             author_handle = post["author"]["handle"]  # Extract the author's handle
             created_at = post["indexedAt"]  # Extract the indexed timestamp
+            # cid = post["cid"]
+            # keys = post.keys()
+            postId = post["uri"].split("/")[-1]
+            postLink = f"https://bsky.app/profile/{author_handle}/post/{postId}"
+
             created_at_date = datetime.fromisoformat(
                 created_at[:-1]
             )  # Convert to datetime
 
             # Filter by date range
-            if start_date <= created_at_date <= end_date:
-                extracted_data.append(
-                    {
-                        "author": author_handle,
-                        "content": post_content,
-                        "created_at": created_at,
-                    }
-                )
+            # if start_date <= created_at_date <= end_date:
+            extracted_data.append(
+                {
+                    "author": author_handle,
+                    "content": post_content,
+                    "created_at": created_at,
+                    # "cid": cid,
+                    # "keys": keys,
+                    "postLink": postLink,
+                }
+            )
         except KeyError as e:
             print(f"Missing data in post: {e}")
     return extracted_data
@@ -106,6 +119,7 @@ def save_to_csv(post_data, filename="bluesky_posts.csv"):
     :param filename: Output CSV filename.
     """
     if post_data:
+        os.remove(filename)
         df = pd.DataFrame(post_data)
         df.to_csv(filename, index=False)
         print(f"Data saved to {filename}")
@@ -115,7 +129,8 @@ def save_to_csv(post_data, filename="bluesky_posts.csv"):
 
 if __name__ == "__main__":
     # Get user input for the search query and date range
-    search_query = input("Enter the search query: ")
+    # search_query = input("Enter the search query: ")
+    search_query = sys.argv[1]
     start_date = "2024-06-28"
     end_date = "2024-09-28"
 
@@ -126,11 +141,13 @@ if __name__ == "__main__":
 
     # Fetch posts
     print("Fetching posts...")
-    raw_posts = search_posts(search_query, access_token, limit=100, sort="latest")
+    raw_posts = search_posts(search_query, access_token, limit=10, sort="latest")
 
     # Extract post data
     print("Extracting post data...")
-    post_data = extract_post_data(raw_posts, start_date, end_date)
+    post_data = extract_post_data(raw_posts)
+
+    # print("Here is the data:", post_data)
 
     # Save posts to CSV
     print("Saving posts to CSV...")
