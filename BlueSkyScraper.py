@@ -38,7 +38,7 @@ def create_session():
 
 
 # Figure Out
-def search_posts(query, access_token, limit=25, sort="latest"):
+def search_posts(query, access_token, since, until, limit=25, sort="top"):
     """
     Search for posts using the BlueSky API.
 
@@ -53,7 +53,14 @@ def search_posts(query, access_token, limit=25, sort="latest"):
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json",
     }
-    params = {"q": query, "limit": limit, "sort": sort}
+    params = {
+        "q": query,
+        "sort": sort,
+        "since": since,
+        "until": until,
+        "limit": limit,
+
+    }
 
     try:
         response = requests.get(url, headers=headers, params=params)
@@ -66,7 +73,7 @@ def search_posts(query, access_token, limit=25, sort="latest"):
         return []
 
 
-def extract_post_data(posts, start_date=None, end_date=None):
+def extract_post_data(posts):
     """
     Extract relevant data from posts and filter by date range.
 
@@ -119,7 +126,8 @@ def save_to_csv(post_data, filename="bluesky_posts.csv"):
     :param filename: Output CSV filename.
     """
     if post_data:
-        os.remove(filename)
+        if (os.path.isfile(filename)):
+            os.remove(filename)
         df = pd.DataFrame(post_data)
         df.to_csv(filename, index=False)
         print(f"Data saved to {filename}")
@@ -129,10 +137,9 @@ def save_to_csv(post_data, filename="bluesky_posts.csv"):
 
 if __name__ == "__main__":
     # Get user input for the search query and date range
-    # search_query = input("Enter the search query: ")
-    search_query = sys.argv[1]
-    start_date = "2024-06-28"
-    end_date = "2024-09-28"
+    search_query = input("Enter the search query: ")
+    start_date = "2024-06-28T00:00:00Z"
+    end_date = "2024-09-28T23:59:59Z"
 
     # Authenticate and create a session
     print("Authenticating...")
@@ -141,7 +148,7 @@ if __name__ == "__main__":
 
     # Fetch posts
     print("Fetching posts...")
-    raw_posts = search_posts(search_query, access_token, limit=10, sort="latest")
+    raw_posts = search_posts(search_query, access_token, start_date, end_date, limit=10, sort="latest")
 
     # Extract post data
     print("Extracting post data...")
