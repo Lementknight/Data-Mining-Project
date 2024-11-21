@@ -44,7 +44,7 @@ def search_posts(query, access_token, since, until, limit=25, sort="top"):
 
     :param query: The search query string.
     :param access_token: Access token for authentication.
-    :param limit: Number of posts to fetch (max: 100).
+    :param limit: Number of posts to fetch, can change in main.
     :param sort: Sorting order ('latest' or 'top').
     :return: List of posts.
     """
@@ -148,7 +148,7 @@ if __name__ == "__main__":
 
     # Fetch posts
     print("Fetching posts...")
-    raw_posts = search_posts(search_query, access_token, start_date, end_date, limit=10, sort="latest")
+    raw_posts = search_posts(search_query, access_token, start_date, end_date, limit=10, sort="latest") #Can change limit
 
     # Extract post data
     print("Extracting post data...")
