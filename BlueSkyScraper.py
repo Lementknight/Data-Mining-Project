@@ -118,7 +118,7 @@ def extract_post_data(posts):
     return extracted_data
 
 
-def save_to_csv(post_data, filename="bluesky_posts.csv"):
+def save_to_csv(post_data, filename):
     """
     Save post data to a CSV file.
 
@@ -137,7 +137,9 @@ def save_to_csv(post_data, filename="bluesky_posts.csv"):
 
 if __name__ == "__main__":
     # Get user input for the search query and date range
-    search_query = input("Enter the search query: ")
+    sport_name = input("Enter the sport you're querying: ")
+    search_query = "Olympics 2024 " + sport_name
+    print(search_query)
     start_date = "2024-06-28T00:00:00Z"
     end_date = "2024-09-28T23:59:59Z"
 
@@ -158,4 +160,4 @@ if __name__ == "__main__":
 
     # Save posts to CSV
     print("Saving posts to CSV...")
-    save_to_csv(post_data)
+    save_to_csv(post_data, f"bluesky_posts_{sport_name}.csv")
