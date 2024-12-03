@@ -1,6 +1,6 @@
 import pandas as pd
-from nltk.sentiment import SentimentIntensityAnalyzer
 from nltk import download
+from nltk.sentiment import SentimentIntensityAnalyzer
 import os
 
 
