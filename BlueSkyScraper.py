@@ -37,7 +37,8 @@ def create_session():
 
 
 
-def search_posts(query, access_token, since, until, limit=25, sort="top"):
+# Figure Out
+def search_posts(query, access_token, since, until, limit=25, sort="top", cursor="", posts=[]):
     """
     Search for posts using the BlueSky API.
 
@@ -58,18 +59,28 @@ def search_posts(query, access_token, since, until, limit=25, sort="top"):
         "since": since,
         "until": until,
         "limit": limit,
+        "cursor": cursor
 
     }
-
-    try:
-        response = requests.get(url, headers=headers, params=params)
-        print(response)
-        response.raise_for_status()
-        return response.json().get("posts", [])
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching posts: {e}")
-        print("Response:", response.text if "response" in locals() else "No response")
-        return []
+    counter = 0
+    while True:
+        counter+=1
+        try:
+            response = requests.get(url, headers=headers, params=params)
+            #print(response)
+            response.raise_for_status()
+            posts = response.json().get("posts", []) + posts
+            data = response.json()
+            
+            next_cursor = data.get("cursor")
+            if not next_cursor:
+                return posts 
+            
+            params['cursor'] = next_cursor
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching posts: {e}")
+            print("Response:", response.text if "response" in locals() else "No response")
+            return []
 
 
 def extract_post_data(posts):
@@ -82,12 +93,17 @@ def extract_post_data(posts):
     :return: List of dictionaries containing post data.
     """
     extracted_data = []
+    # if start_date and end_date:
+    #     start_date = datetime.strptime(start_date, "%Y-%m-%d")
+    #     end_date = datetime.strptime(end_date, "%Y-%m-%d")
 
     for post in posts:
         try:
             post_content = post["record"].get("text", "")  # Extract the text content
             author_handle = post["author"]["handle"]  # Extract the author's handle
             created_at = post["indexedAt"]  # Extract the indexed timestamp
+            # cid = post["cid"]
+            # keys = post.keys()
             postId = post["uri"].split("/")[-1]
             postLink = f"https://bsky.app/profile/{author_handle}/post/{postId}"
 
@@ -102,6 +118,8 @@ def extract_post_data(posts):
                     "author": author_handle,
                     "content": post_content,
                     "created_at": created_at,
+                    # "cid": cid,
+                    # "keys": keys,
                     "postLink": postLink,
                 }
             )
@@ -142,13 +160,13 @@ if __name__ == "__main__":
 
     # Fetch posts
     print("Fetching posts...")
-    raw_posts = search_posts(search_query, access_token, start_date, end_date, limit=10, sort="latest") #Can change limit
+    raw_posts = search_posts(search_query, access_token, start_date, end_date, limit=100, sort="latest", cursor="") #Can change limit
 
     # Extract post data
     print("Extracting post data...")
     post_data = extract_post_data(raw_posts)
 
-    print("Here is the data:", post_data)
+    # print("Here is the data:", post_data)
 
     # Save posts to CSV
     print("Saving posts to CSV...")
