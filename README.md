@@ -18,3 +18,15 @@ python3 BlueSkyScraper.py
 
 If you want to change any of the parameters of the query before you scrape, you can do that in the main function call.
 ![alt text](image-1.png)
+
+Once you run the script you should see a directory named DataMiningProcessing. Within this directory will contain csv files that contain the posts corresponding to each sport scraped.
+
+With this directory you can run the sentiment.py file to conduct the sentiment analysis by running this command:
+```
+python3 sentiment.py
+```
+
+The sentiment.py file reads in each csv file from the DataMiningProcessing directory and generates an updated csv that contains the sentiment score for each post. These updated files reside within the Processed directory. Alongside that directory, there will be a file named sports_sentiment_matrix.xlsx which will contain the aggregated sentiment for each sport.
+
+Here is an example of what the file can look like:
+![alt text](image-2.png)

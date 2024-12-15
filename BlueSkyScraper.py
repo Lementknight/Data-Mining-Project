@@ -3,6 +3,7 @@ import pandas as pd
 from dotenv import load_dotenv
 import os
 import sys
+import shutil
 from datetime import datetime
 
 # Load environment variables from the .env file
@@ -34,6 +35,9 @@ BLUESKY_APP_PASSWORD = os.getenv("BLUESKY_APP_PASSWORD")
 
 # Base URL
 BASE_URL = "https://bsky.social/xrpc"
+
+DIRECTORY_NAME = "DataMiningProcessing"
+os.mkdir(DIRECTORY_NAME)
 
 
 def create_session():
@@ -142,7 +146,8 @@ def save_to_csv(post_data, filename):
             os.remove(filename)
         df = pd.DataFrame(post_data)
         df.to_csv(filename, index=False)
-        print(f"Data saved to {filename}")
+        shutil.move(f"{filename}", DIRECTORY_NAME)
+        print(f"Data saved to {DIRECTORY_NAME}/{filename}")
     else:
         print("No posts to save.")
 
