@@ -8,6 +8,26 @@ from datetime import datetime
 # Load environment variables from the .env file
 load_dotenv()
 
+# Sports Array To Scrape
+sports = [
+  "Cycling Road",
+  "Cycling Track",
+  "Diving",
+  "Equestrian",
+  "Fencing",
+  "Football",
+  "Golf",
+  "Handball",
+  "Hockey",
+  "Judo",
+  "Marathon Swimming",
+  "Modern Pentathlon",
+  "Rhythmic Gymnastics",
+  "Rowing",
+  "Rugby Sevens"
+]
+
+
 # Access credentials from the environment variables
 BLUESKY_HANDLE = os.getenv("BLUESKY_HANDLE")
 BLUESKY_APP_PASSWORD = os.getenv("BLUESKY_APP_PASSWORD")
@@ -128,28 +148,30 @@ def save_to_csv(post_data, filename):
 
 
 if __name__ == "__main__":
-    # Get user input for the search query and date range
-    sport_name = input("Enter the sport you're querying: ")
-    search_query = "Olympics 2024 " + sport_name
-    print(search_query)
-    start_date = "2024-06-28T00:00:00Z"
-    end_date = "2024-09-28T23:59:59Z"
+    # loop through sports array and querry for info
+    for sport in sports:
+        # sport = input("Enter the sport you're querying: ")
+        search_query = "Olympics 2024 " + sport
+        print(search_query)
+        start_date = "2024-06-26T00:00:00Z"
+        end_date = "2024-09-11T23:59:59Z"
 
-    # Authenticate and create a session
-    print("Authenticating...")
-    access_token = create_session()
-    print("Authentication successful.")
+        # Authenticate and create a session
+        print("Authenticating...")
+        access_token = create_session()
+        print("Authentication successful.")
 
-    # Fetch posts
-    print("Fetching posts...")
-    raw_posts = search_posts(search_query, access_token, start_date, end_date, limit=10, sort="latest") #Can change limit
+        # Fetch posts
+        print("Fetching posts...")
+        raw_posts = search_posts(search_query, access_token, start_date, end_date, limit=10, sort="latest") #Can change limit
 
-    # Extract post data
-    print("Extracting post data...")
-    post_data = extract_post_data(raw_posts)
+        # Extract post data
+        print("Extracting post data...")
+        post_data = extract_post_data(raw_posts)
 
-    print("Here is the data:", post_data)
+        # print("Here is the data:", post_data)
 
-    # Save posts to CSV
-    print("Saving posts to CSV...")
-    save_to_csv(post_data, f"bluesky_posts_{sport_name}.csv")
+        # Save posts to CSV
+        print("Saving posts to CSV...")
+        save_to_csv(post_data, f"{sport}.csv")
+
