@@ -1,2 +1,5 @@
 .virtualenv
 .env
+*.csv
+.DS_Store
+

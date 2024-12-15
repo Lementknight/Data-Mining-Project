@@ -57,7 +57,6 @@ def create_session():
 
 
 
-# Figure Out
 def search_posts(query, access_token, since, until, limit=25, sort="top"):
     """
     Search for posts using the BlueSky API.
@@ -103,17 +102,12 @@ def extract_post_data(posts):
     :return: List of dictionaries containing post data.
     """
     extracted_data = []
-    # if start_date and end_date:
-    #     start_date = datetime.strptime(start_date, "%Y-%m-%d")
-    #     end_date = datetime.strptime(end_date, "%Y-%m-%d")
 
     for post in posts:
         try:
             post_content = post["record"].get("text", "")  # Extract the text content
             author_handle = post["author"]["handle"]  # Extract the author's handle
             created_at = post["indexedAt"]  # Extract the indexed timestamp
-            # cid = post["cid"]
-            # keys = post.keys()
             postId = post["uri"].split("/")[-1]
             postLink = f"https://bsky.app/profile/{author_handle}/post/{postId}"
 
@@ -128,8 +122,6 @@ def extract_post_data(posts):
                     "author": author_handle,
                     "content": post_content,
                     "created_at": created_at,
-                    # "cid": cid,
-                    # "keys": keys,
                     "postLink": postLink,
                 }
             )
@@ -181,4 +173,5 @@ if __name__ == "__main__":
 
         # Save posts to CSV
         print("Saving posts to CSV...")
-        save_to_csv(post_data, f"bluesky_posts_{sport}.csv")
+        save_to_csv(post_data, f"{sport}.csv")
+
