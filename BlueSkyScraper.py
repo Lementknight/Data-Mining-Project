@@ -44,7 +44,7 @@ def search_posts(query, access_token, since, until, limit=25, sort="top"):
 
     :param query: The search query string.
     :param access_token: Access token for authentication.
-    :param limit: Number of posts to fetch, can change in main.
+    :param limit: Number of posts to fetch, can change in main. [Can be no greater than 100]
     :param sort: Sorting order ('latest' or 'top').
     :return: List of posts.
     """
@@ -137,27 +137,45 @@ def save_to_csv(post_data, filename):
 
 if __name__ == "__main__":
     # Get user input for the search query and date range
-    sport_name = input("Enter the sport you're querying: ")
-    search_query = "Olympics 2024 " + sport_name
-    print(search_query)
-    start_date = "2024-06-28T00:00:00Z"
-    end_date = "2024-09-28T23:59:59Z"
+    sports_list = [
+    "Sailing",
+    "Shooting",
+    "Skateboarding",
+    "Sport Climbing",
+    "Surfing",
+    "Swimming",
+    "Table Tennis",
+    "Taekwondo",
+    "Tennis",
+    "Trampoline",
+    "Triathlon",
+    "Volleyball",
+    "Water Polo",
+    "Weightlifting",
+    "Wrestling"
+]
+    # sport_name = input("Enter the sport you're querying: ")
+    for sport in sports_list:
+        search_query = "Olympics 2024 " + sport
+        # print(search_query)
+        start_date = "2024-06-26T00:00:00Z"
+        end_date = "2024-09-11T23:59:59Z"
 
-    # Authenticate and create a session
-    print("Authenticating...")
-    access_token = create_session()
-    print("Authentication successful.")
+        # Authenticate and create a session
+        print("Authenticating...")
+        access_token = create_session()
+        print("Authentication successful.")
 
-    # Fetch posts
-    print("Fetching posts...")
-    raw_posts = search_posts(search_query, access_token, start_date, end_date, limit=10, sort="latest") #Can change limit
+        # Fetch posts
+        print("Fetching posts...")
+        raw_posts = search_posts(search_query, access_token, start_date, end_date, limit=100, sort="latest")
 
-    # Extract post data
-    print("Extracting post data...")
-    post_data = extract_post_data(raw_posts)
+        # Extract post data
+        print("Extracting post data...")
+        post_data = extract_post_data(raw_posts)
 
-    # print("Here is the data:", post_data)
+        # print("Here is the data:", post_data)
 
-    # Save posts to CSV
-    print("Saving posts to CSV...")
-    save_to_csv(post_data, f"bluesky_posts_{sport_name}.csv")
+        # Save posts to CSV
+        print("Saving posts to CSV...")
+        save_to_csv(post_data, f"{sport}.csv")
