@@ -2,7 +2,7 @@
 
 # This Repository Has Evolved 🌟
 
-This project has led to the creation of the **MissionBlue API**, an actively developed tool designed for data scraping and analysis of social media posts on the BlueSky platform.
+This project has led to the creation of the **MissionBlue API**, an actively developed tool designed for data scraping of social media posts on the BlueSky platform.
 
 🚀 **Check out the MissionBlue API here:** [MissionBlue API Repository](https://github.com/Lementknight/MissionBlueAPI)  
 🔧 **Current Status:** Actively maintained and evolving!
