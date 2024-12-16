@@ -1,5 +1,18 @@
 # Data-Mining-Project
 
+# This Repository Has Evolved 🌟
+
+This project has led to the creation of the **MissionBlue API**, an actively developed tool designed for data scraping and analysis of social media posts on the BlueSky platform.
+
+🚀 **Check out the MissionBlue API here:** [MissionBlue API Repository](https://github.com/Lementknight/MissionBlueAPI)  
+🔧 **Current Status:** Actively maintained and evolving!
+
+This repository is no longer actively developed, but it remains here for historical reference. For ongoing updates, features, and contributions, please head over to the MissionBlue API repository.
+
+Thank you for your interest and support!
+
+---
+
 Before you can use the BlueSky Webscraper you need to register an account with [Bluesky](https://bsky.app/). Once you create your account you need to create a .env where you have 2 fields BLUESKY_HANDLE and BLUESKY_APP_PASSWORD.![alt text](image.png)
 
 Once you have your creditinals set up run the following commands in your terminal:
